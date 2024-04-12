@@ -25,7 +25,7 @@ class Cliente{
      * @param STRING $nombreCliente
      * @param STRING $apellidoCliente
      * @param STRING $condicionCliente
-     * @param INT $tipoDniCliente
+     * @param STRING $tipoDniCliente
      * @param INT $nroDniCliente
      * */
     public function __construct($nombreCliente, $apellidoCliente, $condicionCliente, $tipoDniCliente, $nroDniCliente){
@@ -101,8 +101,8 @@ class Cliente{
     }
 
     /** Metodo de Acceso Set
-     * @param INT $nuevoTipoDni
-     * @return INT
+     * @param STRING $nuevoTipoDni
+     * @return STRING
      */
     public function setTipoDni($nuevoTipoDni){
         return $this->tipoDni = $nuevoTipoDni;

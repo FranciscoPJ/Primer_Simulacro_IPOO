@@ -13,6 +13,14 @@ la colección de clientes, colección de motos y la colección de ventas realiza
 class Empresa
 {
 
+    /*
+    "Alta Gama", 
+    "Av Argenetina 123", 
+    [$objMoto1, $objMoto2, $objMoto3], 
+    [$objCliente1, $objCliente2], 
+    []
+    */
+
     // Atributos.
     private $denominacion;
     private $direccion;
@@ -127,7 +135,8 @@ class Empresa
      * retorna la referencia al objeto moto cuyo código 
      * coincide con el recibido por parámetro.
      */
-    public function retornarMoto($codigoMoto){
+    public function retornarMoto($codigoMoto)
+    {
 
         // incializacion
         $colMotos = $this->getColObjMotos();
@@ -139,25 +148,153 @@ class Empresa
 
                 // Retorna la moto si se encuentra una coincidencia en el código
                 $objMoto = $moto;
-
             } else {
 
                 // Retorna null si no se encuentra ninguna coincidencia
                 $objMoto = null;
             }
-
         }
-        
+
         return $objMoto;
-    
     }
 
-    /*
-    Implementar el método registrarVenta($colCodigosMoto, $objCliente) método que recibe por parámetro una colección de códigos de motos, la cual es recorrida, y por cada elemento de la colección se busca el objeto moto correspondiente al código y se incorpora a la colección de motos de la instancia Venta que debe ser creada. Recordar que no todos los clientes ni todas las motos, están disponibles para registrar una venta en un momento determinado. 
-    El método debe setear los variables instancias de venta que corresponda y retornar el importe final de la venta
-    */
-    public function registrarVenta($colCodigosMoto, $objCliente){
-        
+    /** Metodo registrarVenta($colCodigosMoto, $objCliente) 
+     * retorna 0 si es null. retorna importe final de la venta
+     * @param ARRAY $colCodigosMoto
+     * @param OBJECT $objCliente
+     * @return INT
+     */
+    public function registrarVenta($colCodigosMoto, $objCliente)
+    {
+
+        /*
+        "Alta Gama", 
+        "Av Argenetina 123", 
+        [$objMoto1, $objMoto2, $objMoto3], 
+        [$objCliente1, $objCliente2], 
+        []
+        */
+
+        //incialiazcion
+        $cantMotosClienteComprar = count($colCodigosMoto);
+        $colMotos = $this->getColObjMotos();
+        $colVentas = $this->getColObjVentas();
+        $countVentas = count($colVentas);
+        $acumuladorMotosPrecioFinal = 0;
+        $motoEncontrada = false;
+        $masMotos = [];
+        $i = 0;
+
+        // se verifica si el cliente esta disponible para un registro de venta
+        if ($objCliente->getCondicion() == "Activo") {
+
+            // igual 1 moto
+            if ($cantMotosClienteComprar == 1 && $colCodigosMoto[0] > 10) { // si el cliente quiere comprar 1 moto, se realiza este recorrido.
+
+                // busqueda de la moto a traves del codigo como parametro
+                while ($i < count($colMotos) && !$motoEncontrada) {
+
+                    // Se verifica si el obj moto, esta en stock y tambien si el cliente esta activo. si no es asi, es false; no se guarda la moto en la col ventas
+                    if ($colMotos[$i]->getCodigo() == $colCodigosMoto[$i] && $colMotos[$i]->getStock() == true) {
+
+                        $motoEncontrada = true;
+
+                        // se guarda el obj moto en una variable
+                        $objMoto = $colMotos[$i];
+
+                        // se almacena en la col ventas de la instancia venta
+                        $colVentas[$countVentas] = $objMoto;
+
+                        // se setea las variable de instancia venta
+                        $this->setColObjVentas($colVentas);
+                    } // fin verificacion moto
+
+                    $i++;
+
+                } // fin while
+            } else { // mas de 1 moto
+
+                if ($colCodigosMoto[0] > 10) { // distinto de cero
+
+                    // busqueda de mas de una 1
+                    for ($u = 0; $u < count($colMotos); $u++) {
+
+                        $contadorMotos = 0;
+
+                        // Se verifica si el obj moto, esta en stock y tambien si el cliente esta activo. si no es asi, es false; no se guarda la moto en la col ventas
+                        if ($colMotos[$u]->getCodigo() == $colCodigosMoto[$u] && $colMotos[$u]->getStock() == true) {
+
+
+                            // se guarda el obj moto en una variable
+                            $masMotos[$contadorMotos] = $colMotos[$u];
+
+                            // se almacena en la col ventas de la instancia venta
+                            $colVentas[$countVentas] = $masMotos[$contadorMotos];
+
+                            // se setea las variable de instancia venta
+                            $this->setColObjVentas($colVentas);
+
+                            $acumuladorMotosPrecioFinal += $colMotos[$u]->darPrecioVenta();
+
+                            $contadorMotos++;
+                        } // fin verificacion moto y acumulacion
+
+                    } // fin for
+                }
+            }
+        } // fin verificacion cliente   
+
+
+        // se verifica si se registro la venta o no
+        if ($cantMotosClienteComprar == 0 || $colCodigosMoto[0] < 11 || $motoEncontrada) {
+
+            // si no esta registrado, retorna 0
+            $importe = 0;
+        } else { // se es true, se guarda el importe final
+
+            if ($cantMotosClienteComprar == 1 && $objCliente->getCondicion() == "Activo" && $objMoto->getStock() == true) {
+
+                // si esta registrado, retorna el importe final de la venta            
+                $importe = $objMoto->darPrecioVenta();
+
+            } else {
+
+                // si son mas de 1 moto el monto va hacer mayor
+                $importe = $acumuladorMotosPrecioFinal;
+            }
+        }
+        // retorna 0 si es null. retorna importe final de la venta
+        return $importe;
+    }
+
+    /** Metodo retornarVentasXCliente($tipo,$numDoc)
+     * Metodo que recibe por parámetro el tipo y número de documento de un Cliente 
+     * y retorna una colección con las ventas realizadas al cliente.
+     * @return ARRAY
+     */
+    public function retornarVentasXCliente($tipo, $numDoc)
+    {
+
+        // incializacion
+        $colVenta = $this->getColObjVentas();
+        $colCliente = $this->getColObjClientes();
+        $countCliente = count($colCliente);
+        $ventasCliente = [];
+
+        // busqueda del cliente a traves de los parametros recibido
+        for ($i = 0; $i < $countCliente; $i++) {
+
+            // verifica si tipo y nro dni son correcto
+            if ($colVenta[$i]->getObjCliente()->getTipoDni()  ==  $tipo && $colVenta[$i]->getObjCliente()->getNroDni() == $numDoc) {
+
+                // se va almacenando cada venta que realizo el cliente
+                $ventasCliente[$i] = $colVenta[$i];
+            } // fin if
+
+        } // fin for
+
+        // retorna una colección con las ventas realizadas al cliente.
+        return $ventasCliente;
     }
 
     public function __toString()
@@ -182,7 +319,7 @@ class Empresa
             $info .= "\nTipo de DNI: " . $clientes[$i]->getTipoDni() . "\n";
             $info .= "\nNumero de DNI: " . $clientes[$i]->getNroDni() . "\n\n";
         }
-        
+
         // col motos
         $info .= "\nColeccion de Motos:\n";
         for ($o = 0; $o < count($motos); $o++) {
@@ -195,7 +332,7 @@ class Empresa
             $info .= "\nPorcentaje Incremento Anual: " . $motos[$o]->getPorIncrementoAnual() . "\n";
             $info .= "\nEstado de Stock: " . $motos[$o]->getStock() . "\n\n";
         }
-        
+
         // col ventas
         $info .= "\nColeccion de Ventas: " . $this->getDireccion() . "\n";
         for ($u = 0; $u < count($ventas); $u++) {
@@ -217,6 +354,8 @@ class Empresa
             $info .= "     Porcentaje Incremento Anual: " . $motos[$u]->getPorIncrementoAnual() . "\n";
             $info .= "     Estado de Stock: " . $motos[$u]->getStock() . "\n\n";
             $info .= "\nPrecio Final: " . $motos[$u]->getPrecioFinal() . "\n\n";
+
+            return $info;
         }
     }
 }

@@ -28,7 +28,8 @@ $objEmpresa = new Empresa("Alta Gama", "Av Argenetina 123", [$objCliente1, $objC
 // 5)-------------------------------metodo registrarVenta([11,12,13], $objCliente)--------
 echo "--------------------------- ejercicio 5 ----------------------------------------\n";
 echo "El valor total es: $" .$objEmpresa->registrarVenta([11,12,13], $objCliente2) . "\n";
-print_r($objEmpresa->getColObjVentas());
+echo $objEmpresa . "\n";
+//print_r($objEmpresa->getColObjVentas()) . "\n";
 
 
 

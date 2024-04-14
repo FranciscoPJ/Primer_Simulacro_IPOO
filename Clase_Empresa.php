@@ -177,11 +177,9 @@ class Empresa
 
                 if ($colMotos[$u]->getStock() == true && $objCliente->getCondicion() == "Activo") {
 
-                    $arrayCodigo[$i] = new Venta(count($colVentas), 2024,  $objCliente, $colMotos[$u], $colMotos[$u]->darPrecioVenta());
+                    $arrayCodigo[$i] = $colMotos[$u];
 
                     $acumMotos += $colMotos[$u]->darPrecioVenta();
-
-                    $colVentas[count($colVentas)] = $arrayCodigo[$i];
 
                     $i++;
                 }
@@ -191,6 +189,12 @@ class Empresa
             }
         } // fin for
 
+        // se creo la nueva venta
+        $nuevaVenta = new Venta(count($colVentas), 2024, $objCliente, $arrayCodigo, $acumMotos);
+
+        $colVentas[count($colVentas)] = $nuevaVenta;
+
+        // se setea el array de ventas
         $this->setColObjVentas($colVentas); // se seteo el array por uno nuevo
 
         return $acumMotos;
@@ -259,7 +263,7 @@ class Empresa
         $info .= "*Listado de Ventas: \n";
         
         for($o = 0; $o < count($ventas); $o++){
-            $vent = $motos[$o];
+            $vent = $ventas[$o];
             $listadoVent .= $vent . "\n";
         }
 

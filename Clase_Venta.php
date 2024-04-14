@@ -161,17 +161,17 @@ class Venta{
 
 
         // presentacion de informacion
-        $info = "Numero de la Venta: " . $this->getNumero() . "\n";
-        $info .= "Fecha de la Venta: " . $this->getFecha() . "\n";
-        $info .= "Informacion del Cliente: \n"; 
+        $info = "  Numero de la Venta: " . $this->getNumero() . "\n";
+        $info .= "  Fecha de la Venta: " . $this->getFecha() . "\n";
+        $info .= "\n  Informacion del Cliente: \n"; 
         $info .= $cliente;
-        $info .= "Informacion de la Moto: \n";
+        $info .= "\n  Informacion de la Moto: \n";
         for ($i = 0; $i < count($moto); $i++){
             $vehi = $moto[$i];
             $listadoMot .= $vehi . "\n"; 
         }
         $info .= $listadoMot;
-        $info .= "\nPrecio Final: " . $this->getPrecioFinal() . "\n\n";
+        $info .= "  Precio Final: $" . $this->getPrecioFinal() . "\n\n";
 
         return $info;
 

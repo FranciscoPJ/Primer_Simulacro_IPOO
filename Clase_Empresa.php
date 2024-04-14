@@ -13,14 +13,6 @@ la colección de clientes, colección de motos y la colección de ventas realiza
 class Empresa
 {
 
-    /*
-    "Alta Gama", 
-    "Av Argenetina 123", 
-    [$objMoto1, $objMoto2, $objMoto3], 
-    [$objCliente1, $objCliente2], 
-    []
-    */
-
     // Atributos.
     private $denominacion;
     private $direccion;
@@ -134,25 +126,29 @@ class Empresa
      * metodo que recorre la colección de motos de la Empresa y 
      * retorna la referencia al objeto moto cuyo código 
      * coincide con el recibido por parámetro.
+     * @return OBJECT
      */
     public function retornarMoto($codigoMoto)
     {
 
         // incializacion
         $colMotos = $this->getColObjMotos();
+        $encontrado = false;
+        $objMoto = null;
+        $i = 0;
 
-        // busqueda de la moto a traves del codigo
-        foreach ($colMotos as $moto) {
+        // busqueda de la moto a traves del codigo solicitado
+        while ($i < count($colMotos) && !$encontrado) {
 
-            if ($moto->getCodigo() == $codigoMoto) {
+            // verifica que si encontro la moto solicitada
+            if ($colMotos[$i]->getCodigo() == $codigoMoto) {
 
-                // Retorna la moto si se encuentra una coincidencia en el código
-                $objMoto = $moto;
-            } else {
+                $encontrado = true;
 
-                // Retorna null si no se encuentra ninguna coincidencia
-                $objMoto = null;
+                $objMoto = $colMotos[$i];
             }
+
+            $i++;
         }
 
         return $objMoto;
@@ -167,104 +163,37 @@ class Empresa
     public function registrarVenta($colCodigosMoto, $objCliente)
     {
 
-        /*
-        "Alta Gama", 
-        "Av Argenetina 123", 
-        [$objMoto1, $objMoto2, $objMoto3], 
-        [$objCliente1, $objCliente2], 
-        []
-        */
-
         //incialiazcion
-        $cantMotosClienteComprar = count($colCodigosMoto);
-        $colMotos = $this->getColObjMotos();
         $colVentas = $this->getColObjVentas();
-        $countVentas = count($colVentas);
-        $acumuladorMotosPrecioFinal = 0;
-        $motoEncontrada = false;
-        $masMotos = [];
+        $colMotos = $this->getColObjMotos();
+        $arrayCodigo = [];
+        $acumMotos = 0;
         $i = 0;
+        $u = 0;
 
-        // se verifica si el cliente esta disponible para un registro de venta
-        if ($objCliente->getCondicion() == "Activo") {
+        for ($u; $u < count($colMotos); $u++) {
 
-            // igual 1 moto
-            if ($cantMotosClienteComprar == 1 && $colCodigosMoto[0] > 10) { // si el cliente quiere comprar 1 moto, se realiza este recorrido.
+            if ($colMotos[$u]->getCodigo() == $colCodigosMoto[$u]) {
 
-                // busqueda de la moto a traves del codigo como parametro
-                while ($i < count($colMotos) && !$motoEncontrada) {
+                if ($colMotos[$u]->getStock() == true && $objCliente->getCondicion() == "Activo") {
 
-                    // Se verifica si el obj moto, esta en stock y tambien si el cliente esta activo. si no es asi, es false; no se guarda la moto en la col ventas
-                    if ($colMotos[$i]->getCodigo() == $colCodigosMoto[$i] && $colMotos[$i]->getStock() == true) {
+                    $arrayCodigo[$i] = new Venta(count($colVentas), 2024,  $objCliente, $colMotos[$u], $colMotos[$u]->darPrecioVenta());
 
-                        $motoEncontrada = true;
+                    $acumMotos += $colMotos[$u]->darPrecioVenta();
 
-                        // se guarda el obj moto en una variable
-                        $objMoto = $colMotos[$i];
-
-                        // se almacena en la col ventas de la instancia venta
-                        $colVentas[$countVentas] = $objMoto;
-
-                        // se setea las variable de instancia venta
-                        $this->setColObjVentas($colVentas);
-                    } // fin verificacion moto
+                    $colVentas[count($colVentas)] = $arrayCodigo[$i];
 
                     $i++;
-
-                } // fin while
-            } else { // mas de 1 moto
-
-                if ($colCodigosMoto[0] > 10) { // distinto de cero
-
-                    // busqueda de mas de una 1
-                    for ($u = 0; $u < count($colMotos); $u++) {
-
-                        $contadorMotos = 0;
-
-                        // Se verifica si el obj moto, esta en stock y tambien si el cliente esta activo. si no es asi, es false; no se guarda la moto en la col ventas
-                        if ($colMotos[$u]->getCodigo() == $colCodigosMoto[$u] && $colMotos[$u]->getStock() == true) {
-
-
-                            // se guarda el obj moto en una variable
-                            $masMotos[$contadorMotos] = $colMotos[$u];
-
-                            // se almacena en la col ventas de la instancia venta
-                            $colVentas[$countVentas] = $masMotos[$contadorMotos];
-
-                            // se setea las variable de instancia venta
-                            $this->setColObjVentas($colVentas);
-
-                            $acumuladorMotosPrecioFinal += $colMotos[$u]->darPrecioVenta();
-
-                            $contadorMotos++;
-                        } // fin verificacion moto y acumulacion
-
-                    } // fin for
                 }
-            }
-        } // fin verificacion cliente   
-
-
-        // se verifica si se registro la venta o no
-        if ($cantMotosClienteComprar == 0 || $colCodigosMoto[0] < 11 || $motoEncontrada) {
-
-            // si no esta registrado, retorna 0
-            $importe = 0;
-        } else { // se es true, se guarda el importe final
-
-            if ($cantMotosClienteComprar == 1 && $objCliente->getCondicion() == "Activo" && $objMoto->getStock() == true) {
-
-                // si esta registrado, retorna el importe final de la venta            
-                $importe = $objMoto->darPrecioVenta();
-
             } else {
 
-                // si son mas de 1 moto el monto va hacer mayor
-                $importe = $acumuladorMotosPrecioFinal;
+                $acumMotos;
             }
-        }
-        // retorna 0 si es null. retorna importe final de la venta
-        return $importe;
+        } // fin for
+
+        $this->setColObjVentas($colVentas); // se seteo el array por uno nuevo
+
+        return $acumMotos;
     }
 
     /** Metodo retornarVentasXCliente($tipo,$numDoc)
@@ -297,65 +226,47 @@ class Empresa
         return $ventasCliente;
     }
 
-    public function __toString()
-    {
+    public function __toString(){
 
         // incializacion
         $clientes = $this->getColObjClientes();
         $motos = $this->getColObjMotos();
         $ventas = $this->getColObjVentas();
+        $listadoCli = "";
+        $listadoMot = "";
+        $listadoVent = "";
 
         // presentacion de informacion de los atributos de la clase empresa
-        $info = "\nDenominacion: " . $this->getDenominacion() . "\n";
-        $info .= "\nDireccion: " . $this->getDireccion() . "\n";
-        // col cliente
-        $info .= "\nColeccion de Clientes:\n";
-        for ($i = 0; $i < count($clientes); $i++) {
+        $info = "\nInformacion de la Empresa:\n";
+        $info .= "*Denominacion: " . $this->getDenominacion() . "\n";
+        $info .= "*Direccion: " . $this->getDireccion() . "\n";
+        $info .= "*Listado de Clientes: \n";
 
-            // presentacion de informacion de la coleccion
-            $info .= "\nNombre: " . $clientes[$i]->getNombre() . "\n";
-            $info .= "\nApellido: " . $clientes[$i]->getApellido() . "\n";
-            $info .= "\nCondicion: " . $clientes[$i]->getCondicion() . "\n";
-            $info .= "\nTipo de DNI: " . $clientes[$i]->getTipoDni() . "\n";
-            $info .= "\nNumero de DNI: " . $clientes[$i]->getNroDni() . "\n\n";
+        for($i = 0; $i < count($clientes); $i++){
+            $cliente = $clientes[$i];
+            $listadoCli .= $cliente . "\n";
         }
 
-        // col motos
-        $info .= "\nColeccion de Motos:\n";
-        for ($o = 0; $o < count($motos); $o++) {
-
-            // presentacion de informacion de la coleccion
-            $info .= "\nCodigo de la Moto: " . $motos[$o]->getCodigo() . "\n";
-            $info .= "\nCosto de la Moto: " . $motos[$o]->getCosto() . "\n";
-            $info .= "\nAño de Fabricacion: " . $motos[$o]->getAñoFabricacion() . "\n";
-            $info .= "\nDescripcion de la Moto: " . $motos[$o]->getDescripcion() . "\n";
-            $info .= "\nPorcentaje Incremento Anual: " . $motos[$o]->getPorIncrementoAnual() . "\n";
-            $info .= "\nEstado de Stock: " . $motos[$o]->getStock() . "\n\n";
+        $info .= $listadoCli;
+        $info .= "*Listado de Motos: \n";
+        
+        for($u = 0; $u < count($motos); $u++){
+            $vehiculo = $motos[$u];
+            $listadoMot .= $vehiculo . "\n";
         }
 
-        // col ventas
-        $info .= "\nColeccion de Ventas: " . $this->getDireccion() . "\n";
-        for ($u = 0; $u < count($ventas); $u++) {
-
-            // presentacion de informacion de la coleccion
-            $info .= "\nNumero de la Venta: " . $ventas[$u]->getNumero() . "\n";
-            $info .= "Fecha de la Venta: " . $ventas[$u]->getFecha() . "\n";
-            $info .= "Nombre Completo del Cliente: " . $ventas[$u]->getNombre() . " " . $ventas[$u]->getApellido() . "\n";
-            $info .= "Tipo de ID del Cliente: " . $ventas[$u]->getTipoDni() . "\n";
-            $info .= "Numero de ID del Cliente: " . $ventas[$u]->getNroDni() . "\n";
-            $info .= "Estado del Cliente: " . $ventas[$u]->getCondicion() . "\n";
-            $info .= "\n---------------------------------------------------------\n\n";
-            $info .= "Informacion de la Moto: \n";
-            // aca va 1 sola moto, no todas ya que es una venta
-            $info .= "     Codigo de la Moto: " . $motos[$u]->getCodigo() . "\n";
-            $info .= "     Costo de la Moto: " . $motos[$u]->getCosto() . "\n";
-            $info .= "     Año de Fabricacion: " . $motos[$u]->getAñoFabricacion() . "\n";
-            $info .= "     Descripcion de la Moto: " . $motos[$u]->getDescripcion() . "\n";
-            $info .= "     Porcentaje Incremento Anual: " . $motos[$u]->getPorIncrementoAnual() . "\n";
-            $info .= "     Estado de Stock: " . $motos[$u]->getStock() . "\n\n";
-            $info .= "\nPrecio Final: " . $motos[$u]->getPrecioFinal() . "\n\n";
-
-            return $info;
+        $info .= $listadoMot;
+        $info .= "*Listado de Ventas: \n";
+        
+        for($o = 0; $o < count($ventas); $o++){
+            $vent = $motos[$o];
+            $listadoVent .= $vent . "\n";
         }
+
+        $info .= $listadoVent;
+
+        return $info;
+        
     }
+
 }

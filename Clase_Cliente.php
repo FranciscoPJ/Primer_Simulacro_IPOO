@@ -125,11 +125,11 @@ class Cliente{
     public function __toString(){
         
         // presentacion de informacion
-        $info = "\nNombre: " . $this->getNombre() . "\n";
-        $info .= "\nApellido: " . $this->getApellido() . "\n";
-        $info .= "\nCondicion: " . $this->getCondicion() . "\n";
-        $info .= "\nTipo de DNI: " . $this->getTipoDni() . "\n";
-        $info .= "\nNumero de DNI: " . $this->getNroDni() . "\n";
+        $info = "     Nombre: " . $this->getNombre() . "\n";
+        $info .= "     Apellido: " . $this->getApellido() . "\n";
+        $info .= "     Condicion: " . $this->getCondicion() . "\n";
+        $info .= "     Tipo de ID: " . $this->getTipoDni() . "\n";
+        $info .= "     Numero de ID: " . $this->getNroDni() . "\n";
 
         return $info;
 

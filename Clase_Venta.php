@@ -157,27 +157,20 @@ class Venta{
         //incializacion
         $cliente = $this->getObjCliente();
         $moto = $this->getColObjMotos();
+        $listadoMot = "";
+
 
         // presentacion de informacion
-        $info = "\nNumero de la Venta: " . $this->getNumero() . "\n";
+        $info = "Numero de la Venta: " . $this->getNumero() . "\n";
         $info .= "Fecha de la Venta: " . $this->getFecha() . "\n";
-        $info .= "Nombre Completo del Cliente: " . $cliente->getNombre() . " " . $cliente->getApellido() . "\n";
-        $info .= "Tipo de ID del Cliente: " . $cliente->getTipoDni() . "\n";
-        $info .= "Numero de ID del Cliente: " . $cliente->getNroDni() . "\n";
-        $info .= "Estado del Cliente: " . $cliente->getCondicion() . "\n";
-        $info .= "\n---------------------------------------------------------\n\n";
+        $info .= "Informacion del Cliente: \n"; 
+        $info .= $cliente;
         $info .= "Informacion de la Moto: \n";
-        // aca va 1 sola moto, no todas ya que es una venta
-        for ($i = 0; $i < count($this->getColObjMotos()); $i++){
-
-            $info .= "    Codigo de la Moto: " . $moto[$i]->getCodigo() . "\n";
-            $info .= "     Costo de la Moto: " . $moto[$i]->getCosto() . "\n";
-            $info .= "     Año de Fabricacion: " . $moto[$i]->getAñoFabricacion() . "\n";
-            $info .= "     Descripcion de la Moto: " . $moto[$i]->getDescripcion() . "\n";
-            $info .= "     Porcentaje Incremento Anual: " . $moto[$i]->getPorIncrementoAnual() . "\n";
-            $info .= "     Estado de Stock: " . $moto[$i]->getStock() . "\n\n";
-            
+        for ($i = 0; $i < count($moto); $i++){
+            $vehi = $moto[$i];
+            $listadoMot .= $vehi . "\n"; 
         }
+        $info .= $listadoMot;
         $info .= "\nPrecio Final: " . $this->getPrecioFinal() . "\n\n";
 
         return $info;

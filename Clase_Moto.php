@@ -182,13 +182,23 @@ class Moto{
      */
     public function __toString(){
         
+        // inicializacion
+        $verificarStock = $this->getStock();
+
+        //verrificacion de true o false de stock de la moto
+        if($verificarStock == true){
+            $respuesta = "true";
+        } else {
+        $respuesta = "false";
+        }
+        
         // presentacion de informacion
-        $info = "\nCodigo de la Moto: " . $this->getCodigo() . "\n";
-        $info .= "\nCosto de la Moto: " . $this->getCosto() . "\n";
-        $info .= "\nAño de Fabricacion: " . $this->getAñoFabricacion() . "\n";
-        $info .= "\nDescripcion de la Moto: " . $this->getDescripcion() . "\n";
-        $info .= "\nPorcentaje Incremento Anual: " . $this->getPorIncrementoAnual() . "\n";
-        $info .= "\nEstado de Stock: " . $this->getStock() . "\n";
+        $info = "     Codigo de la Moto: " . $this->getCodigo() . "\n";
+        $info .= "     Costo de la Moto: " . $this->getCosto() . "\n";
+        $info .= "     Año de Fabricacion: " . $this->getAñoFabricacion() . "\n";
+        $info .= "     Descripcion de la Moto: " . $this->getDescripcion() . "\n";
+        $info .= "     Porcentaje Incremento Anual: " . $this->getPorIncrementoAnual() . "%\n";
+        $info .= "     Estado de Stock: " . $respuesta . "\n";
 
         return $info;
 

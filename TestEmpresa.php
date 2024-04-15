@@ -27,25 +27,19 @@ $objEmpresa = new Empresa("Alta Gama", "Av Argenetina 123", [$objCliente1, $objC
 
 // 5)-------------------------------metodo registrarVenta([11,12,13], $objCliente)--------
 echo "--------------------------- ejercicio 5 ----------------------------------------\n";
-echo "El valor total es: $" .$objEmpresa->registrarVenta([11,12,13], $objCliente2) . "\n";
+echo "El valor total es: $" .$objEmpresa->registrarVenta([11, 12, 13], $objCliente2) . "\n";
 echo $objEmpresa . "\n";
-//print_r($objEmpresa->getColObjVentas()) . "\n";
-
-
-
-
-
 
 // 6)-------------------------------metodo registrarVenta([0], $objCliente)---------------
-//echo "--------------------------- ejercicio 6 ----------------------------------------\n";
-//echo "El valor total es: $" .$objEmpresa->registrarVenta([0], $objCliente2) . "\n";
+echo "--------------------------- ejercicio 6 ----------------------------------------\n";
+echo "El valor total es: $" .$objEmpresa->registrarVenta([0], $objCliente2) . ". Porque no existe tal codigo en la Base de Datos.\n";
 
 // 7)-------------------------------metodo registrarVenta([2], $objCliente)---------------
-//echo "--------------------------- ejercicio 7 ----------------------------------------\n";
-//echo "El valor total es: $" .$objEmpresa->registrarVenta([2], $objCliente2) . "\n";
+echo "--------------------------- ejercicio 7 ----------------------------------------\n";
+echo "El valor total es: $" .$objEmpresa->registrarVenta([2], $objCliente2) . ". Porque no existe tal codigo en la Base de Datos.\n";
 
 // 8)-------------------------------metodo registrarVenta([2], $objCliente)---------------
-//echo "--------------------------- ejercicio 8 ----------------------------------------\n";
+echo "--------------------------- ejercicio 8 ----------------------------------------\n";
 //echo "El valor total es: $" .$objEmpresa->retornarVentasXCliente($tipo,$numDoc) . "\n";
 
 

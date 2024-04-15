@@ -167,26 +167,42 @@ class Empresa
         $colVentas = $this->getColObjVentas();
         $colMotos = $this->getColObjMotos();
         $arrayCodigo = [];
+        $encontrado = false;
         $acumMotos = 0;
         $i = 0;
         $u = 0;
+        
 
-        for ($u; $u < count($colMotos); $u++) {
+        for ($u; $u < count($colCodigosMoto); $u++) {
 
-            if ($colMotos[$u]->getCodigo() == $colCodigosMoto[$u]) {
+            $e = 0;
 
-                if ($colMotos[$u]->getStock() == true && $objCliente->getCondicion() == "Activo") {
+            while($e < count($colMotos) && !$encontrado){
 
-                    $arrayCodigo[$i] = $colMotos[$u];
+                if ($colMotos[$e]->getCodigo() == $colCodigosMoto[$u]) {
 
-                    $acumMotos += $colMotos[$u]->darPrecioVenta();
+                    if ($colMotos[$e]->getStock() == true && $objCliente->getCondicion() == "Activo") {
 
-                    $i++;
-                }
-            } else {
+                        $encontrado = true;
+    
+                        $arrayCodigo[$i] = $colMotos[$e];
+    
+                        $acumMotos += $colMotos[$e]->darPrecioVenta();
+    
+                        $i++;
+                    }
 
-                $acumMotos;
-            }
+                } else {
+    
+                    $acumMotos; // se almacena $0 ya que no existe
+
+                } // fin si
+
+                $e++;
+                $encontrado = false;
+
+            } // fin while
+
         } // fin for
 
         // se creo la nueva venta

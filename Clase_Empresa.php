@@ -158,62 +158,55 @@ class Empresa
      * retorna 0 si es null. retorna importe final de la venta
      * @param ARRAY $colCodigosMoto
      * @param OBJECT $objCliente
-     * @return INT
+     * @return ARRAY //INT
      */
     public function registrarVenta($colCodigosMoto, $objCliente)
     {
 
         //incialiazcion
         $colVentas = $this->getColObjVentas();
-        $colMotos = $this->getColObjMotos();
+        $countVentas = count($colVentas);
         $arrayCodigo = [];
-        $encontrado = false;
+        $combinarArray = [];
         $acumMotos = 0;
         $i = 0;
         $u = 0;
-        
 
         for ($u; $u < count($colCodigosMoto); $u++) {
 
-            $e = 0;
+            $motoEncontrada = $this->retornarMoto($colCodigosMoto[$u]);
 
-            while($e < count($colMotos) && !$encontrado){
+            if ($motoEncontrada != null && $motoEncontrada->getStock() == true && $objCliente->getCondicion() == "Activo") {
 
-                if ($colMotos[$e]->getCodigo() == $colCodigosMoto[$u]) {
+                $arrayCodigo[$i] = $motoEncontrada;
 
-                    if ($colMotos[$e]->getStock() == true && $objCliente->getCondicion() == "Activo") {
+                $acumMotos += $motoEncontrada->darPrecioVenta();
 
-                        $encontrado = true;
-    
-                        $arrayCodigo[$i] = $colMotos[$e];
-    
-                        $acumMotos += $colMotos[$e]->darPrecioVenta();
-    
-                        $i++;
-                    }
+                $i++;
+            } else {
 
-                } else {
-    
-                    $acumMotos; // se almacena $0 ya que no existe
+                $acumMotos; // se almacena $0 ya que no existe
 
-                } // fin si
-
-                $e++;
-                $encontrado = false;
-
-            } // fin while
+            } // fin si
 
         } // fin for
 
-        // se creo la nueva venta
-        $nuevaVenta = new Venta(count($colVentas), 2024, $objCliente, $arrayCodigo, $acumMotos);
+        if ($motoEncontrada != null) {
 
-        $colVentas[count($colVentas)] = $nuevaVenta;
+            $combinarArray = $arrayCodigo;
 
-        // se setea el array de ventas
-        $this->setColObjVentas($colVentas); // se seteo el array por uno nuevo
+            // se creo la nueva venta
+            $nuevaVenta = new Venta(($countVentas + 1), 2024, $objCliente, $combinarArray, $acumMotos);
+
+            $colVentas[$countVentas] = $nuevaVenta;
+
+            // se setea el array de ventas
+            $this->setColObjVentas($colVentas); // se seteo el array por uno nuevo
+
+        }
 
         return $acumMotos;
+        
     }
 
     /** Metodo retornarVentasXCliente($tipo,$numDoc)
@@ -226,19 +219,21 @@ class Empresa
 
         // incializacion
         $colVenta = $this->getColObjVentas();
-        $colCliente = $this->getColObjClientes();
-        $countCliente = count($colCliente);
         $ventasCliente = [];
+        $u = 0;
+        $i = 0;
 
         // busqueda del cliente a traves de los parametros recibido
-        for ($i = 0; $i < $countCliente; $i++) {
+        for ($i; $i < count($colVenta); $i++) {
 
             // verifica si tipo y nro dni son correcto
-            if ($colVenta[$i]->getObjCliente()->getTipoDni()  ==  $tipo && $colVenta[$i]->getObjCliente()->getNroDni() == $numDoc) {
+            if (($colVenta[$i]->getObjCliente()->getTipoDni() ==  $tipo ) && ($colVenta[$i]->getObjCliente()->getNroDni() == $numDoc)) {
 
                 // se va almacenando cada venta que realizo el cliente
-                $ventasCliente[$i] = $colVenta[$i];
-            } // fin if
+                $ventasCliente[$u] = $colVenta[$i];
+
+                $u++;
+            }  // fin if
 
         } // fin for
 
@@ -246,7 +241,8 @@ class Empresa
         return $ventasCliente;
     }
 
-    public function __toString(){
+    public function __toString()
+    {
 
         // incializacion
         $clientes = $this->getColObjClientes();
@@ -262,23 +258,23 @@ class Empresa
         $info .= "*Direccion: " . $this->getDireccion() . "\n";
         $info .= "*Listado de Clientes: \n";
 
-        for($i = 0; $i < count($clientes); $i++){
+        for ($i = 0; $i < count($clientes); $i++) {
             $cliente = $clientes[$i];
             $listadoCli .= $cliente . "\n";
         }
 
         $info .= $listadoCli;
         $info .= "*Listado de Motos: \n";
-        
-        for($u = 0; $u < count($motos); $u++){
+
+        for ($u = 0; $u < count($motos); $u++) {
             $vehiculo = $motos[$u];
             $listadoMot .= $vehiculo . "\n";
         }
 
         $info .= $listadoMot;
         $info .= "*Listado de Ventas: \n";
-        
-        for($o = 0; $o < count($ventas); $o++){
+
+        for ($o = 0; $o < count($ventas); $o++) {
             $vent = $ventas[$o];
             $listadoVent .= $vent . "\n";
         }
@@ -286,7 +282,5 @@ class Empresa
         $info .= $listadoVent;
 
         return $info;
-        
     }
-
 }

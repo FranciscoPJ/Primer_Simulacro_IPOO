@@ -162,7 +162,7 @@ class Moto{
         if ($stock == true){
 
             // esta disponible y realiza el calculo que obtiene el valor total de la moto a venderse
-            $venta = $compra + $compra * ($anio * $porIncAnual);
+            $venta = $compra + ($compra * ($anio * $porIncAnual)/100);
 
         }
         else{
